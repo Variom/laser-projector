@@ -5,7 +5,7 @@
 int strobePin = 9;
 int resetPin = 11;
 int Frequencies[7];
-int OutPin = A1;
+int OutPin = A1; nouveau port A0
 
 movingAvg avgFrequency(20);
 int FrequencyMovingAvg=0;
