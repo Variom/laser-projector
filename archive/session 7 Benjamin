@@ -1,0 +1,74 @@
+#include <movingAvg.h>
+
+
+
+int strobePin = 9;
+int resetPin = 11;
+int Frequencies[7];
+int OutPin = A1; nouveau port A0
+
+movingAvg avgFrequency(20);
+int FrequencyMovingAvg=0;
+
+const int laser = 3;
+
+
+void setup() {
+ 
+  Serial.begin(9600);
+  pinMode(strobePin, OUTPUT);
+  pinMode(resetPin, OUTPUT);
+  pinMode(OutPin, INPUT);
+
+  digitalWrite(resetPin,  LOW);
+  digitalWrite(strobePin, LOW);
+  delay(1);
+
+  digitalWrite(resetPin,  HIGH);
+  delay(1);
+  digitalWrite(resetPin,  LOW);
+  digitalWrite(strobePin, HIGH);
+  delay(1);
+
+  pinMode(laser, OUTPUT);
+  digitalWrite(laser, HIGH);
+
+  avgFrequency.begin();
+
+}
+
+void loop() {
+  // Lecture de la sortie du module pour chaque fréquence
+
+  for (int i = 0; i < 7; i++) {
+    digitalWrite(strobePin, LOW);
+    delayMicroseconds(100);
+    Frequencies[i] = analogRead(OutPin);
+    digitalWrite(strobePin, HIGH);
+    delayMicroseconds(1);
+   }
+
+  // Création d'un tableau de valeurs
+  /*for (int i = 0; i < 7; i++) {
+    Serial.print(Frequencies[i]);
+    Serial.print("   ");
+  }*/
+ 
+  
+
+  int avg = avgFrequency.reading(Frequencies[1]);
+  
+  FrequencyMovingAvg = avgFrequency.getAvg();
+  
+  delay(3);
+  
+  
+  if (Frequencies[1] > 1.18*FrequencyMovingAvg){
+    
+    digitalWrite(laser,LOW);
+  }
+  else{
+    digitalWrite(laser,HIGH);
+  }
+
+}
